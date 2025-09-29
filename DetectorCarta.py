@@ -2,15 +2,17 @@
 import cv2
 import numpy as np
 
-
 def main():
-    # Abrir la cámara USB (0 suele ser la primera cámara, cámbialo si tienes varias)
+    # Abrir la cámara USB (0 suele ser la primera cámara, la del USB es 1)
     cap = cv2.VideoCapture(1)
 
-    # Verificamos que la cámara se haya abierto correctamente
+ # Verificamos que la cámara se haya abierto correctamente
     if not cap.isOpened():
         print("No se puede abrir la cámara")
         return
+
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
     print("Cámara abierta correctamente. Pulsa 'q' para salir.")
 
@@ -18,17 +20,37 @@ def main():
         # Capturamos frame a frame
         ret, frame = cap.read()
         if not ret:
-            print("No se puede recibir frame. Saliendo...")
+            print("No se puede recibir frame. Revisa la cámara o el índice.")
             break
 
-        # Mostrar el frame en una ventana
-        cv2.imshow('Cámara USB', frame)
+        # Convertir a gris y suavizar
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        blur = cv2.GaussianBlur(gray, (5,5), 0)
 
-        # Salir si el usuario pulsa la tecla 'q'
+        # Detectar bordes
+        edges = cv2.Canny(blur, 50, 150)
+
+        # Encontrar contornos
+        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for cnt in contours:
+            # Aproximar contorno a un polígono
+            approx = cv2.approxPolyDP(cnt, 0.02*cv2.arcLength(cnt, True), True)
+            
+            # Solo polígonos con 4 lados (rectángulos)
+            if len(approx) == 4 and cv2.contourArea(approx) > 1000:
+                cv2.drawContours(frame, [approx], 0, (0,255,0), 2)
+                # Opcional: dibujar un texto genérico
+                cv2.putText(frame, "Carta", tuple(approx[0][0]), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
+
+        # mostrar el frame en una ventana
+        cv2.imshow("Detector de cartas", frame)
+
+ # Salir si el usuario pulsa la tecla 'q'
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    # Liberar la cámara y cerrar ventanas
+ # Liberar la cámara y cerrar ventanas
     cap.release()
     cv2.destroyAllWindows()
     print("Cámara cerrada correctamente.")
