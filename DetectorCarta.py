@@ -39,9 +39,20 @@ def main():
             
             # Solo polígonos con 4 lados (rectángulos)
             if len(approx) == 4 and cv2.contourArea(approx) > 1000:
-                cv2.drawContours(frame, [approx], 0, (0,255,0), 2)
-                # Opcional: dibujar un texto genérico
-                cv2.putText(frame, "Carta", tuple(approx[0][0]), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
+                # Obtener bounding box
+                x, y, w, h = cv2.boundingRect(approx)
+                aspect_ratio = float(h) / float(w) if w > 0 else 0
+
+                # Comprobamos si la proporción se parece a la de una carta (≈1.39)
+                if 1.3 < aspect_ratio < 2.45:  # tolerancia de ±0.2
+                    cv2.drawContours(frame, [approx], 0, (0,255,0), 2)
+                    cv2.putText(frame, "Carta detectada", (x, y-10),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
+                else:
+                    # Dibuja en rojo si no cumple proporciones
+                    cv2.drawContours(frame, [approx], 0, (0,0,255), 2)
+                    cv2.putText(frame, "No coincide con medidas", (x, y-10),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 2)
 
         # mostrar el frame en una ventana
         cv2.imshow("Detector de cartas", frame)
