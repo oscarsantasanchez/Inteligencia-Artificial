@@ -1,3 +1,7 @@
 # Inteligencia-Artificial
 
-El examen parcial se trata de crear un software que a través de Inteligencia Artificial detecte las cartas de un mazo de cartas de poker que se encuentre en un tapete y detectar cuales son esas cartas.
+|Proyecto|Link|Descripcion|
+|-|-|-|
+|Exmanen Parcial|[Examen Parcial](/Programa%20Parcial/)|Programa de detección de cartas para el examen parcial|
+|Regrasion Lineal| [Regresion Lineal](/Regresion%20Lineal/)| Primera Entrega de Regresion Lineal|
+|Clasificacion mediante KNN| [KNN](/KNN/)|Clasificación según KNN

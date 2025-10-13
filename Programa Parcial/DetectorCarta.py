@@ -1,6 +1,7 @@
 # Import necessary packages
 import cv2
 import numpy as np
+import ValorCarta;
 
 def main():
     # Abrir la cámara USB (0 suele ser la primera cámara, la del USB es 1)
