@@ -48,10 +48,19 @@ pip install opencv-python numpy
 
 ## Solución Propuesta
 ### Diagrama de Decisión
+
+<div align=center>
+
 ![Diamgrama de decision](/Examen%20Parcial/Diagramas/DiagramaDecision.svg)
 
+</div>
+
 ### Secuenciación de operaciones sobre la imagen
+<div align=center>
+
 ![Secuanciacion de imagenes](/Examen%20Parcial/Diagramas/SecuenciaOperaciones.svg)
+
+</div>
 
 ## Organización de carpetas
 ```
