@@ -77,9 +77,9 @@ examen_final/
      └── Trebol/
 ```
 
-> [!NOTE] Las imagenes de las carpetas son de las cartas completas
-
 ## Código Fuente
-El Script del proyecto es la clase [CardRecognizer.py](/Examen%20Parcial/CardRecognizer.py). En donde dentro del mismo código se encuentra comentado cada función con la acción que realiza. Lo que hay que destacar es que para poder hacer la detección tienes que pulsar la teca `C`, si no lo haces no pocederá a realizar la detección del valor y el palo.
+El Script del proyecto es la clase [CardRecognizer.py](/Examen%20Parcial/CardRecognizer.py).Esta clase está asociada a la carpeta [Templates](/Examen%20Parcial/templates/). En donde dentro del mismo código se encuentra comentado cada función con la acción que realiza. Lo que hay que destacar es que para poder hacer la detección tienes que pulsar la teca `C`, si no lo haces no pocederá a realizar la detección del valor y el palo.
+
+> [!NOTE] Las imagenes de las carpetas son de las cartas completas
 
 Se entrega un sistema completo de reconocimiento de cartas mediante visión artificial clásica, totalmente funcional y documentado acompañado de diagramas PUML para la documentación del proyecto.
