@@ -1,85 +1,122 @@
-# Examen Parcial - IA: **Reconocimiento de cartas de Poker**
+# Examen Parcial - IA: **Reconocimiento de Cartas de Poker**
 
-Este proyecto inplementa un sistema de reconocimiento automático de cartas de póker utilizando técnicas clásicas de vision artificial, sin redes neuronales. El sistema captura video en tiempo real, detecta automáticamente cartas en la escena y utiliza template matching para identificar su valor y su palo.
+Este proyecto implementa un sistema de reconocimiento automático de cartas de póker utilizando **visión artificial clásica**, sin redes neuronales.  
+El sistema captura vídeo en tiempo real, detecta automáticamente cartas en la escena y utiliza **template matching** junto con **detección híbrida de palos (color + forma)** para identificar **valor y palo**.
 
-## Componentes utilizados
+---
+
+## 1. Componentes Utilizados
+
 |**Componente**|**Características Técnicas**|**Justificación**|
 |-|-|-|
-|Webcam Logitech C270|Resolución HD 720p, 30fps lente fija| Suficiente para obtener imágenes nítidas de las cartas. Buena relación calidad/precio.|
-|PC con Windows 11|-|OpenCV necesita procesamiento de imágenes en tiempo real, estos requisitos garantizan fluidez.|
-|Iluminación artificial |Luz ambiente suave| Evita sobreas duras que dificultan la detección del entorno|
+|Webcam Logitech C270|Resolución HD 720p, 30fps lente fija|Proporciona nitidez suficiente y estabilidad para la detección en tiempo real.|
+|PC con Windows 11|CPU multinúcleo, 8GB RAM mínimo|- OpenCV necesita capacidad de cómputo continua para procesar vídeo y warping de cartas.|
+|Iluminación artificial|Luz ambiente suave|Evita sombras duras que pueden alterar la detección de bordes y análisis de color.|
 
-Los requisitos que se tienen para este proyecto son:
-- USB libre para conectar la webcam
-- Superficie plana y preferiblemente uniforme: tapete verde.
-- Baraja de cartas francesa de poker
+### Requisitos físicos
+- Un puerto **USB libre**  
+- Superficie plana y uniforme (ideal: tapete verde)  
+- Baraja francesa estándar (52 cartas)
 
-## Software
+---
+
+## 2. Software
+
 |**Software**|**Versión**|**Justificación**|
 |-|-|-|
-|Python 2.10+|Dependiente del sistema|Principal lenguaje utilizado para CV|
-|OpenCV|4.x|Librería estándar para visión artificial clásica|
+|Python 3.10+|Dependiente del sistema|Lenguaje principal para visión artificial clásica|
+|OpenCV|4.x|Biblioteca estándar para procesamiento de imágenes|
 |NumPy|Última versión|Manejo eficiente de matrices e imágenes|
-|PlantUML| - | Uso general para los diagramas dentro de la documentación|
+|PlantUML| - | Generación de diagramas UML de la documentación|
 
-**Requisitos de instalación dentro de la carpeta del proyecto**
+### Instalación de dependencias
 ```
 pip install opencv-python numpy
 ```
 
-## Hoja de ruta del desarrollo
-1. Estudio del problema
-   1. Requisitos de reconocimiento
-   2. Restricciones del examen
-2. Captura y procesamiento
-   1. Conversión a gris, suavizado y Canny
-3. Detección de contorno
-   1. Identificación de la carta más grande
-4. Corrección de perspectiva
-   1. Warping a tamaño normalizado 200x300
-5. Template Marching
-   1. Comparación con todas las plantillas cargadas
-6. Integración en tiempo real
-   1. Cámara + overlay del resultado
-7. Optimización y refinado
-   1. Umbrales
-   2. Normalización de tamaños
-8. Documentación
+---
 
-## Solución Propuesta
-### Diagrama de Decisión
+## 3. Hoja de Ruta del Desarrollo
 
-<div align=center>
+1. **Estudio del problema**
+   - Análisis de restricciones del examen
+   - Requisitos de reconocimiento de cartas (valor y palo)
+2. **Captura y preprocesado de imagen**
+   - Conversión a escala de grises  
+   - Suavizado con **GaussianBlur (5x5)**  
+   - Detección de bordes con **Canny (60–150)**
+3. **Detección de la carta principal**
+   - Búsqueda del contorno más grande  
+   - Filtrado por área mínima (2000 px)  
+   - Aproximación poligonal a 4 vértices
+4. **Corrección de perspectiva**
+   - Warping a **200×300 px**  
+   - Carta normalizada para comparación
+5. **Clasificación del palo (híbrida)**
+   - Análisis de color: rojo vs negro (HSV y binarización)  
+   - Análisis de forma: circularidad, aspect ratio, solidity, distribución vertical  
+   - Palo resultante: corazón, diamante, pica o trébol
+6. **Detección del valor mediante Template Matching**
+   - Comparación solo con plantillas del palo detectado  
+   - Métrica de similitud: **cv2.TM_CCOEFF_NORMED**
+7. **Integración en tiempo real**
+   - Dibujo de contornos en la imagen original  
+   - Superposición de texto con nombre y palo  
+   - Visualización de carta normalizada en ventana aparte
+8. **Optimización y refinado**
+   - Ajuste de umbrales y filtros  
+   - Redimensionamiento de templates a 200x300 px
+9. **Documentación**
+   - Diagramas PUML  
+   - README y explicación técnica completa  
 
-![Diamgrama de decision](/Examen%20Parcial/Diagramas/DiagramaDecision.svg)
+---
 
-</div>
+## 4. Solución Propuesta
 
-### Secuenciación de operaciones sobre la imagen
-<div align=center>
+### 4.1 Diagrama de Decisión – Clasificación del Palo
+![Diagrama de decision](/Examen%20Parcial/Diagramas/DiagramaDecision.svg)
 
-![Secuanciacion de imagenes](/Examen%20Parcial/Diagramas/SecuenciaOperaciones.svg)
+### 4.2 Secuenciación de operaciones sobre la imagen
+![Diagrama de operaciones](/Examen%20Parcial/Diagramas/SecuenciaOperaciones.svg)
 
-</div>
-
-## Organización de carpetas
+## 5. Organización de Carpetas
 ```
 examen_final/
 │── CardRecognizer.py
 │── README.md
 └── templates/
-     ├── Corazon/
+     ├── corazon/
      │     ├── A.jpg
      │     ├── 2.jpg
      │     └── ...
-     ├── Pica/
-     ├── Diamante/
-     └── Trebol/
+     ├── diamante/
+     ├── pica/
+     └── trebol/
 ```
 
-## Código Fuente
-El Script del proyecto es la clase [CardRecognizer.py](/Examen%20Parcial/CardRecognizer.py).Esta clase está asociada a la carpeta [Templates](/Examen%20Parcial/templates/). En donde dentro del mismo código se encuentra comentado cada función con la acción que realiza. Lo que hay que destacar es que para poder hacer la detección tienes que pulsar la teca `C`, si no lo haces no pocederá a realizar la detección del valor y el palo.
+## 6. Código Fuente
 
-> [!NOTE] Las imagenes de las carpetas son de las cartas completas
+El script principal es CardRecognizer.py, que incluye:
+- Carga de plantillas
+- Detección híbrida de palo
+- Corrección de perspectiva (Warp)
+- Template Matching para valores
+- Visualización en tiempo real
+- Comentarios detallados explicando cada función
 
-Se entrega un sistema completo de reconocimiento de cartas mediante visión artificial clásica, totalmente funcional y documentado acompañado de diagramas PUML para la documentación del proyecto.
+## 7. Instrucciones de Uso
+
+1. Ejecutar el script principal: ``` python CardRecognizer.py ```
+2. Colocar una carta frente a la webcam.
+3. El sistema detecta automáticamente:
+   - Contorno de la carta  
+   - Valor  
+   - Palo  
+   - Score de coincidencia  
+
+
+> **Nota:** No es necesario pulsar ninguna tecla para iniciar la detección; todo se realiza automáticamente en tiempo real.
+
+## 8. Código
+Este es el archivo principal a ejecutar, [Card Recognizer](/Examen%20Parcial/CardRecognizer.py). para ello tienes que entrar dentro de la carpeta de Examen parcial. Dentro de la carpeta [Templates](/Examen%20Parcial/templates/) encontramos las imágenes con las que el programa realiza la comparación para detectar el valor de la carta. 
